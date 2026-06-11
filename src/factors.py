@@ -33,6 +33,8 @@ class FactorCalculator:
                 'momentum': self.calculate_momentum(df),
                 'low_volatility': self.calculate_volatility(df)
             })
+            temp_df['market_cap'] = df['market_cap'] if 'market_cap' in df.columns else np.nan
+            temp_df['roe'] = df['roe'] if 'roe' in df.columns else np.nan
             all_factors.append(temp_df)
 
         factor_df = pd.concat(all_factors, ignore_index=True)
@@ -40,7 +42,7 @@ class FactorCalculator:
 
     def normalize_factors(self, factor_df):
         """使用百分位排名法标准化因子"""
-        factor_cols = ['momentum', 'low_volatility']
+        factor_cols = ['momentum', 'low_volatility', 'market_cap', 'roe']
         for col in factor_cols:
             # 按日期分组，将每个因子转换为0到1之间的排名分
             factor_df[f'{col}_normalized'] = factor_df.groupby('date')[col].rank(pct=True)
